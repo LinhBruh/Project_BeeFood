@@ -45,7 +45,7 @@ cd Project_BeeFood/befood_bigdata_dag
 
 2. **Chạy Docker Compose**
 ```bash
-# Lệnh khởi động docker compose
+-- Lệnh khởi động docker compose
    docker-compose up --build -d   
 
 -- Nếu cần khởi động lại sau khi thay đổi cấu hình:
