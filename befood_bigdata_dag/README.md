@@ -40,7 +40,7 @@ befood_bigdata_dag/
 1. **Clone hoặc tạo thư mục**
 ```bash
 git clone https://github.com/LinhBruh/Project_BeeFood.git
-cd Project_BeeFood
+cd Project_BeeFood/befood_bigdata_dag
 ```
 
 2. **Chạy Docker Compose**
