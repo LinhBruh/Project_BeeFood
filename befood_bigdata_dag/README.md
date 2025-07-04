@@ -44,9 +44,8 @@ cd Project_BeeFood
 ```
 
 2. **Chạy Docker Compose**
-cd C:\Users\Admin\befood_bigdata_dag   # Nếu thư mục có địa chỉ C:\Users\Admin\befood_bigdata_dag
 ```bash
-docker-compose up -d                   # Lệnh khởi động docker
+docker-compose up --build -d   # Lệnh khởi động docker
 ```
 
 3. **Truy cập các dịch vụ**
