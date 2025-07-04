@@ -91,4 +91,4 @@ cd Project_BeeFood/befood_bigdata_dag
 
 - Thư mục `tmp/` cần tồn tại để lưu file CSV trung gian.
 - DAG có thể sửa để chạy theo `@daily`, `@hourly` hoặc thủ công tùy mục đích kiểm thử.
-- Spark chạy demo đơn giản – có thể mở rộng xử lý nâng cao.
+- Spark job chỉ là demo – có thể mở rộng để phân tích nâng cao hơn.
