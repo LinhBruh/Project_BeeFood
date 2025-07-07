@@ -1,13 +1,13 @@
-import requests
-import json
-import time
 import random
+import asyncio
+import aiohttp
+from databases.mongodb import get_client
 
 #ham get token access de crawl du lieu befood
-def get_token():
+async def get_token(session):
     url = "https://gw.be.com.vn/api/v1/be-delivery-gateway/api/v1/user/guest"
 
-    payload = json.dumps({
+    payload = {
     "locale": "vi",
     "app_version": "11280",
     "version": "1.1.280",
@@ -34,7 +34,7 @@ def get_token():
     },
     "latitude": None,
     "longitude": None
-    })
+    }
 
     headers = {
     'accept': '*/*',
@@ -54,19 +54,17 @@ def get_token():
     'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
     }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
-
-    return json.loads(response.text)["access_token"]
+    async with session.post(url, headers = headers, json = payload) as response:
+        data = await response.json()
+    return data["access_token"]
 
 
 #Ham lay thong tin cac nha hang
-def get_restaurent(page, latitude, longitude):
-
-    access_token = get_token()
+async def get_restaurent(page, latitude, longitude,session, access_token):
 
     url = "https://gw.be.com.vn/api/v1/be-marketplace/web/collection/items/restaurants"
 
-    payload = json.dumps({
+    payload = {
     "collection_id": "231",
     "page": page,
     "filters": [],
@@ -95,7 +93,7 @@ def get_restaurent(page, latitude, longitude):
     },
     "latitude": latitude,
     "longitude": longitude
-    })
+    }
 
     headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0',
@@ -115,15 +113,16 @@ def get_restaurent(page, latitude, longitude):
     'TE': 'trailers'
     }
 
-    return requests.request("POST", url, data=payload, headers= headers).text
+    async with session.post(url, headers=headers, json = payload) as response:
+        return await response.json()
+    
 
 #Ham lay ra thong tin chi tiet cua nha hang
-def get_detail_restaurants(restaurant_id):
-    access_token = get_token()
+async def get_detail_restaurants(restaurant_id, access_token, session):
 
     url = "https://gw.be.com.vn/api/v1/be-marketplace/web/restaurant/detail"
 
-    payload = json.dumps({
+    payload = {
     "restaurant_id": restaurant_id,
     "locale": "vi",
     "app_version": "11280",
@@ -147,7 +146,7 @@ def get_detail_restaurants(restaurant_id):
         "screen_width": 360,
         "screen_height": 640
     }
-    })
+    }
 
     headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0',
@@ -167,34 +166,38 @@ def get_detail_restaurants(restaurant_id):
     'TE': 'trailers'
     }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
+    async with session.post(url, headers=headers, json = payload) as respponse :
+        return await respponse.json()
 
-    return json.loads(response.text)
-
-
-def combie_data(restaurant):
-    restaurant_id = restaurant["restaurant_id"]
-    data_detail_restaurant = get_detail_restaurants(restaurant_id)["data"]["categories"]
-    restaurant["data_detail_restaurant"] = data_detail_restaurant
+async def combie_data(restaurant, session, access_token):
+    data_detail_restaurant = await get_detail_restaurants(restaurant["restaurant_id"],access_token, session)
+    restaurant["detail_restaurant"] =  data_detail_restaurant.get("data", {}).get("categories", [])
 
     return restaurant
-    
-    
 
-def insert_to_mongo():
-    for i in range(0,100):
-        data_response = json.loads(get_restaurent(page = i,latitude=10.826233309253325,longitude=106.62746414326836))
-        data = data_response["data"]
 
-        if data:
-            for res in data:
-                full_data_restaurant = combie_data(res)
-                time.sleep(random.randint(1,2))
-        else:
-            break
+async def main():
+    total_page = 10
+    latitude=10.826233309253325
+    longitude=106.62746414326836
+    collection = get_client()
 
-        time.sleep(random.randint(1,6))
+    async with aiohttp.ClientSession() as session:
+        token = await get_token()
 
+        for page in range(1, total_page +1):
+            try :
+                page_data = await get_restaurent(page, latitude, longitude, session, token)
+                restaurants = page_data.get("data",[])
+
+                if not restaurants:
+                    break
+
+                detail_tasks = [combie_data(restaurant, session, token) for restaurant in restaurants]
+                detailed_restaurants = await asyncio.gather(*detail_tasks)
+
+            except:
+                pass
 
                 
 
