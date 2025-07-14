@@ -2,6 +2,8 @@ import random
 import asyncio
 import aiohttp
 from databases.mongodb import get_client
+from logs.logger import create_log
+import traceback
 
 #ham get token access de crawl du lieu befood
 async def get_token(session):
@@ -68,7 +70,7 @@ async def get_restaurent(page, latitude, longitude,session, access_token):
     "collection_id": "231",
     "page": page,
     "filters": [],
-    "limit": 100,
+    "limit": 300,
     "locale": "vi",
     "app_version": "11280",
     "version": "1.1.280",
@@ -145,7 +147,9 @@ async def get_detail_restaurants(restaurant_id, access_token, session):
         "ad_id": "",
         "screen_width": 360,
         "screen_height": 640
-    }
+    },
+    "latitude":10.826233309253325,
+    "longitude":106.62746414326836
     }
 
     headers = {
@@ -182,22 +186,49 @@ async def main():
     longitude=106.62746414326836
     collection = get_client()
 
+    logger = create_log()
+
     async with aiohttp.ClientSession() as session:
-        token = await get_token()
+        logger.info("Get access_token")
+        token = await get_token(session)
+        logger.info("Get token ok, begin crawl")
 
         for page in range(1, total_page +1):
-            try :
-                page_data = await get_restaurent(page, latitude, longitude, session, token)
-                restaurants = page_data.get("data",[])
+            logger.info(f"Begin crawl page {page}")
+            retries = 0
+            max_retries = 3
 
-                if not restaurants:
+            while retries < max_retries:
+                try :
+                    logger.info("Get restaurants")
+                    page_data = await get_restaurent(page, latitude, longitude, session, token)
+                    restaurants = page_data.get("data",[])
+                    logger.info("Get restaurants done")
+
+                    if not restaurants:
+                        logger.info("Crawl end!")
+                        break
+
+                    logger.info("Get detail restaurants")
+                    detail_tasks = [combie_data(restaurant, session, token) for restaurant in restaurants]
+                    detailed_restaurants = await asyncio.gather(*detail_tasks)
+                    logger.info("Get detail done!")
+
+                    logger.info("Begin insert data in database")
+                    collection.insert_many(detailed_restaurants)
+                    logger.info("Insert done!")
                     break
-
-                detail_tasks = [combie_data(restaurant, session, token) for restaurant in restaurants]
-                detailed_restaurants = await asyncio.gather(*detail_tasks)
-
-            except:
-                pass
+                except Exception as e:
+                    retries +=1
+                    logger.error(f"Error at page {page} : {e} - BEGIN RETRIES {retries}/3")
+                    logger.info(traceback.format_exc())
+                    await asyncio.sleep(3)
+            else:
+                logger.critical(f"Page {page} can't crawl with {retries} retries")
+                
+if __name__ == "__main__":
+    asyncio.run(main())
+                
 
                 
 

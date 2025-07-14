@@ -1,0 +1,8 @@
+#Dockerfile.spark
+FROM apache/spark:3.5.5
+
+USER root
+
+RUN pip install pymongo 
+
+USER spark

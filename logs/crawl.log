@@ -1,0 +1,45 @@
+2025-07-08 20:54:36,852 - INFO - Get access_token
+2025-07-08 20:54:37,164 - INFO - Get token ok, begin crawl
+2025-07-08 20:54:37,165 - INFO - Begin crawl page 1
+2025-07-08 20:54:37,165 - INFO - Get restaurants
+2025-07-08 20:54:37,615 - INFO - Get restaurants done
+2025-07-08 20:54:37,615 - INFO - Get detail restaurants
+2025-07-08 20:54:41,616 - INFO - Get detail done!
+2025-07-08 20:54:41,616 - INFO - Begin insert data in database
+2025-07-08 20:54:41,824 - INFO - Insert done!
+2025-07-08 20:54:41,824 - INFO - Begin crawl page 2
+2025-07-08 20:54:41,824 - INFO - Get restaurants
+2025-07-08 20:54:42,005 - INFO - Get restaurants done
+2025-07-08 20:54:42,005 - INFO - Crawl end!
+2025-07-08 20:54:42,005 - INFO - Begin crawl page 3
+2025-07-08 20:54:42,005 - INFO - Get restaurants
+2025-07-08 20:54:42,178 - INFO - Get restaurants done
+2025-07-08 20:54:42,178 - INFO - Crawl end!
+2025-07-08 20:54:42,178 - INFO - Begin crawl page 4
+2025-07-08 20:54:42,178 - INFO - Get restaurants
+2025-07-08 20:54:42,283 - INFO - Get restaurants done
+2025-07-08 20:54:42,283 - INFO - Crawl end!
+2025-07-08 20:54:42,283 - INFO - Begin crawl page 5
+2025-07-08 20:54:42,283 - INFO - Get restaurants
+2025-07-08 20:54:42,446 - INFO - Get restaurants done
+2025-07-08 20:54:42,446 - INFO - Crawl end!
+2025-07-08 20:54:42,446 - INFO - Begin crawl page 6
+2025-07-08 20:54:42,446 - INFO - Get restaurants
+2025-07-08 20:54:42,668 - INFO - Get restaurants done
+2025-07-08 20:54:42,668 - INFO - Crawl end!
+2025-07-08 20:54:42,668 - INFO - Begin crawl page 7
+2025-07-08 20:54:42,668 - INFO - Get restaurants
+2025-07-08 20:54:42,884 - INFO - Get restaurants done
+2025-07-08 20:54:42,884 - INFO - Crawl end!
+2025-07-08 20:54:42,884 - INFO - Begin crawl page 8
+2025-07-08 20:54:42,884 - INFO - Get restaurants
+2025-07-08 20:54:43,103 - INFO - Get restaurants done
+2025-07-08 20:54:43,104 - INFO - Crawl end!
+2025-07-08 20:54:43,104 - INFO - Begin crawl page 9
+2025-07-08 20:54:43,104 - INFO - Get restaurants
+2025-07-08 20:54:43,203 - INFO - Get restaurants done
+2025-07-08 20:54:43,203 - INFO - Crawl end!
+2025-07-08 20:54:43,203 - INFO - Begin crawl page 10
+2025-07-08 20:54:43,203 - INFO - Get restaurants
+2025-07-08 20:54:43,324 - INFO - Get restaurants done
+2025-07-08 20:54:43,324 - INFO - Crawl end!
