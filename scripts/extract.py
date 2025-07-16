@@ -7,7 +7,8 @@ spark = SparkSession.builder.appName("Extract_Data")\
         "/opt/spark/jars/mongo-spark-connector_2.12-10.4.1.jar",
         "/opt/spark/jars/mongodb-driver-sync-4.11.1.jar",
         "/opt/spark/jars/mongodb-driver-core-4.11.1.jar",
-        "/opt/spark/jars/bson-4.11.1.jar"]))\
+        "/opt/spark/jars/bson-4.11.1.jar",
+        "/opt/spark/jars/postgresql-42.7.1.jar"]))\
         .config("spark.sql.warehouse.dir", "/tmp/spark-artifacts") \
         .config("spark.sql.artifacts.dir", "/tmp/spark-artifacts") \
         .config("spark.local.dir", "/tmp/spark-artifacts") \

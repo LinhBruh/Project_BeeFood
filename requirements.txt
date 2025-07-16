@@ -1,3 +1,9 @@
 pandas
 pymongo
 psycopg2-binary
+pyspark
+aiohttp
+apache-airflow==2.9.1
+apache-airflow-providers-postgres
+apache-airflow-providers-mongo
+apache-airflow-providers-apache-spark

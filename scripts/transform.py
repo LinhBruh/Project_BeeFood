@@ -1,5 +1,4 @@
 from pyspark.sql import SparkSession
-from extract import extract_data
 from pyspark.sql.functions import explode, col
 
 spark = SparkSession.builder.appName("Transform_data")\
@@ -9,7 +8,6 @@ spark = SparkSession.builder.appName("Transform_data")\
         .config("spark.local.dir", "/tmp/spark-artifacts") \
         .getOrCreate()
 
-df = extract_data()
 
 def transform_data(df):
     restaurant_data = df.select("restaurant_id","name","address","rating","city","median_price","review_count","free_delivery")
@@ -19,6 +17,8 @@ def transform_data(df):
                            col("detail_restaurant.category_name").alias("category_name"),
                            col("restaurant_id")
                            )
+    
+    categories_data =  categories_data.dropDuplicates(["category_id"])
     df_explode_category = df_explode_detail_restaurant.withColumn("items", explode(col("detail_restaurant.items")))
 
     item_data = df_explode_category.select(col("items.restaurant_item_id").alias("item_id"),
@@ -42,13 +42,18 @@ def transform_data(df):
                                                  col("customize_item.is_required").alias("is_required")
                                                  )
 
-    df_explode_customize = df_explode_item.withColumn("customize_option", explode(col("customize_item.customize_option")))
-    customize_option_data = df_explode_customize.select()
-    return restaurant_data, categories_data, item_data
+    customize_item_data = customize_item_data.dropDuplicates(["customize_id"])
+    df_explode_customize = df_explode_item.withColumn("customize_options", explode(col("customize_item.customize_options")))
+    customize_option_data = df_explode_customize.select(col("customize_options.customize_option_id").alias("customize_option_id"),
+                                                        col("customize_options.customize_option_name").alias("customize_option_name"),
+                                                        col("customize_options.customize_price").alias("customize_option_price"),
+                                                        col("customize_item.customize_id")
+                                                        )
+    customize_option_data = customize_option_data.dropDuplicates(["customize_option_id"])
+    data_fact = df_explode_item.select("restaurant_id",
+                                        col("items.restaurant_item_id").alias("item_id"),
+                                        col("items.price").alias("price"),
+                                        col("customize_item.customize_id").alias("customize_id")
+                                           )
+    return restaurant_data, categories_data, item_data, customize_item_data, customize_option_data, data_fact
 
-
-restaurant, categories,  item = transform_data(df)
-
-print(restaurant)
-print(categories)
-item.show(5)
