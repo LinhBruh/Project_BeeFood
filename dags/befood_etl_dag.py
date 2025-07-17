@@ -1,5 +1,5 @@
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 from datetime import datetime
 
@@ -16,20 +16,15 @@ with DAG(
     catchup=False,
     description='Crawl -> Mongo -> Spark -> Postgres',
 ) as dag:
-    def crawl_wrapper():
-        from crawl_data.crawl import main
-        import asyncio
-        asyncio.run(main())
-    
-    crawl_task = PythonOperator(
+    crawl_task = BashOperator(
         task_id = "crawl_task",
-        python_callable = crawl_wrapper
+        bash_command = "cd /opt/airflow && python -m crawl_data.crawl"
     )
 
     etl_task = SparkSubmitOperator(
         task_id = "etl_task",
         application = "/opt/airflow/spark_jobs/load.py",
-        conn_id = None,
+        conn_id = "spark_default",
         verbose = False,
         conf = {
             "spark.master": "spark://spark-master:7077",

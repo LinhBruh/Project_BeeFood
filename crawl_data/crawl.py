@@ -2,7 +2,7 @@ import random
 import asyncio
 import aiohttp
 from databases.mongodb import get_client
-from logs.logger import create_log
+from log.logger import create_log
 import traceback
 
 #ham get token access de crawl du lieu befood

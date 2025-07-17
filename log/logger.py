@@ -1,6 +1,6 @@
 import logging
 
-def create_log(log_file="./logs/crawl.log"):
+def create_log(log_file="./log/crawl.log"):
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
 

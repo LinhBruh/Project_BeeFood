@@ -19,9 +19,9 @@ def load_data(restaurant_data, categories_data, item_data, customize_item_data, 
         "driver": "org.postgresql.Driver"
     }
     
-    # restaurant_data.write.jdbc(url = jdbc_url, table = "dim_restaurants", mode = "append", properties = properties)
-    # categories_data.write.jdbc(url = jdbc_url, table = "dim_categories", mode = "append", properties = properties)
-    # item_data.write.jdbc(url = jdbc_url, table = "dim_items", mode = "append", properties = properties)
+    restaurant_data.write.jdbc(url = jdbc_url, table = "dim_restaurants", mode = "append", properties = properties)
+    categories_data.write.jdbc(url = jdbc_url, table = "dim_categories", mode = "append", properties = properties)
+    item_data.write.jdbc(url = jdbc_url, table = "dim_items", mode = "append", properties = properties)
     customize_item_data.write.jdbc(url = jdbc_url, table = "dim_customize_groups", mode = "append", properties = properties)
     customize_option_data.write.jdbc(url = jdbc_url, table = "dim_customize_options", mode = "append", properties = properties)
     data_fact.write.jdbc(url = jdbc_url, table = "fact_menu_snapshot", mode = "append", properties = properties)
